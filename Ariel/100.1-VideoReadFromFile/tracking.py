@@ -2,7 +2,6 @@ import cv2
 import argparse
 import numpy as np
 
-
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-v", "--video", help = "path to the video")
@@ -31,14 +30,17 @@ while(1):
     res = cv2.bitwise_and(frame,frame, mask= mask)
 
     cv2.namedWindow('frame',cv2.WINDOW_NORMAL)
-    cv2.namedWindow('mask',cv2.WINDOW_NORMAL)
-    cv2.namedWindow('res',cv2.WINDOW_NORMAL)
     cv2.imshow('frame',frame)
+    cv2.resizeWindow('frame',400,250)
+
+    cv2.namedWindow('mask',cv2.WINDOW_NORMAL)
     cv2.imshow('mask',mask)
+    cv2.resizeWindow('mask',400,250)
+
+    cv2.namedWindow('res',cv2.WINDOW_NORMAL)
     cv2.imshow('res',res)
-    cv2.resizeWindow('frame',800,600)
-    cv2.resizeWindow('mask',800,600)
-    cv2.resizeWindow('res',800,600)
+    cv2.resizeWindow('res',400,250)
+
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
         break

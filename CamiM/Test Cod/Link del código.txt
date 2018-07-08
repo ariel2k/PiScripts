@@ -1,0 +1,1 @@
+http://answers.opencv.org/question/177732/how-to-measure-distance-between-2-objects-in-a-video-edited/

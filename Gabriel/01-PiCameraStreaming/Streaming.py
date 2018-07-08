@@ -17,15 +17,10 @@ time.sleep(0.1)
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 	# grab the raw NumPy array representing the image, then initialize the timestamp
 	# and occupied/unoccupied text
-	#image = frame.array
+	image = frame.array
+ 
 
-
-
-##############################
-    # Take each frame
-    image = frame.array
-
-    # Convert BGR to HSV
+	# Convert BGR to HSV
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
     # define range of blue color in HSV
@@ -36,24 +31,18 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     mask = cv2.inRange(hsv, lower_blue, upper_blue)
 
     # Bitwise-AND mask and original image
-    res = cv2.bitwise_and(image,image, mask= mask)
+    res = cv2.bitwise_and(frame,frame, mask= mask)
+	# show the frame
 
-    cv2.namedWindow('frame',cv2.WINDOW_NORMAL)
+	cv2.namedWindow('frame',cv2.WINDOW_NORMAL)
     cv2.imshow('frame',image)
     cv2.resizeWindow('frame',400,250)
 
-    cv2.namedWindow('mask',cv2.WINDOW_NORMAL)
-    cv2.imshow('mask',mask)
-    cv2.resizeWindow('mask',400,250)
-
-    cv2.namedWindow('res',cv2.WINDOW_NORMAL)
-    cv2.imshow('res',res)
-    cv2.resizeWindow('res',400,250)
-
-    k = cv2.waitKey(5) & 0xFF
-    if k == 27:
-        break
-##############################
-cv2.destroyAllWindows()
-
-
+	key = cv2.waitKey(1) & 0xFF
+ 
+	# clear the stream in preparation for the next frame
+	rawCapture.truncate(0)
+ 
+	# if the `q` key was pressed, break from the loop
+	if key == ord("q"):
+		break

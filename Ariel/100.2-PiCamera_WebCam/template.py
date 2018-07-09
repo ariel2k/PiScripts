@@ -58,7 +58,7 @@ def getFrameWebCam(videoSource):
 
 ################ ISPI ########################
 def isPiCamera(args):
-    return args["video"] is not None
+    return args["picamera"] is not None
 
 ################  PI  ########################
 def yesPiCamera(videoSource):

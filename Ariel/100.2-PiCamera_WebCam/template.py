@@ -30,7 +30,7 @@ def videoSource(args):
         return initWebCam()
 
 def initPiCamera():
-    from picamera.array import PiRGBArray
+    from picamera import PiCamera
     import time
     camera = PiCamera()
     time.sleep(0.1)

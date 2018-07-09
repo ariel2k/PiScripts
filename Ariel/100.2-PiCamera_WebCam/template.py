@@ -1,19 +1,17 @@
 import cv2
 import argparse
 import time
-import sys
 
 # HERE MODIFY!!!!! 
 def action(frame):
     show(frame,'Output')    
 
-# Show window
+# Show Window
 def show(frame,WindowName):
     cv2.namedWindow(WindowName,cv2.WINDOW_NORMAL)
     cv2.imshow(WindowName,frame)
     cv2.resizeWindow(WindowName,640,480)
 
-# construct the argument parse and parse the arguments
 def getArgs():
     ap = argparse.ArgumentParser()
     ap.add_argument("-v", "--video", 
@@ -22,40 +20,61 @@ def getArgs():
         help = "if use PiCamera (optional) default 0")
     return vars(ap.parse_args())
 
-# Get VideoSource
-def getVideoSource(args, versionPy):
-    vsTxt = "Video source: "
+################ INIT ########################
+def videoSource(args):
     if args["picamera"] is not None:
-        vsTxt += "PiCamera "
-        initPiCamera(versionPy)
+        return initPiCamera()
+    if args["video"] is not None:
+        return initVideoFile(args["video"])
+    else:
+        return initWebCam()
+
+def initPiCamera():
+    from picamera.array import PiRGBArray
+    import time
+    camera = PiCamera()
+    time.sleep(0.1)
+    return camera
+
+def initVideoFile(path):
+    return cv2.VideoCapture(path)
+
+def initWebCam():
+    return cv2.VideoCapture(0)
+
+################ FRAME ########################
+def getFrame(args, videoSource):
+    if args["picamera"] is not None:
+        return framePiCamera(videoSource)
     elif args["video"] is not None:
-        vsTxt += "Video File "
-        cap = cv2.VideoCapture(args["video"])
+        _,frame = frameVideoFile(videoSource)
     else:
-        vsTxt += "WebCam "
-        cap = cv2.VideoCapture(0)
-    print (vsTxt)
-    print ("Press 'q' for exit...")
-    return cap
+        _,frame = frameWebCam(videoSource)
+    return frame
 
-def initPiCamera(versionPy):
-    if versionPy == '2':
-        execfile('templatePiCamera.py')
-    else:
-        exec(open("./templatePiCamera.py").read())
+def framePiCamera(videoSource):
+    from picamera.array import PiRGBArray
+    rawCapture = PiRGBArray(videoSource)
+    videoSource.capture(rawCapture, format="bgr")
+    image = rawCapture.array
+    return image
 
-############################ MAIN ##############################
-versionPy = sys.version[0:1]
+def frameVideoFile(videoSource):
+    return videoSource.read()
+
+def frameWebCam(videoSource):
+    return videoSource.read()
+
+
+################ MAIN ########################
 args = getArgs()
-cap = getVideoSource(args,versionPy)
-
+vs = videoSource(args)
 while(1):
-    # Take each frame
-    _, frame = cap.read()
-
+    # ReadFrame
+    frame = getFrame(args, vs)
     action(frame)
 
-    # if the `q` key was pressed, break from the loop
+    # Exit
     key = cv2.waitKey(1) & 0xFF
     if key == ord("q"):
         break

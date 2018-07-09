@@ -38,7 +38,7 @@ def getVideoSource(args, versionPy):
     print ("Press 'q' for exit...")
     return cap
 
-def initPiCamera():
+def initPiCamera(versionPy):
     if versionPy == '2':
         execfile('templatePiCamera.py')
     else:

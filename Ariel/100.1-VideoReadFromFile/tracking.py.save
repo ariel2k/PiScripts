@@ -1,18 +1,6 @@
 import cv2
 import argparse
 import numpy as np
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-import time
-
-# initialize the camera and grab a reference to the raw camera capture
-camera = PiCamera()
-camera.resolution = (640, 480)
-camera.framerate = 32
-rawCapture = PiRGBArray(camera, size=(640, 480))
- 
-# allow the camera to warmup
-time.sleep(0.1)
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -26,9 +14,7 @@ else:
 
 while(1):
     # Take each frame
-
-    cam = camera.capture_continuous(rawCapture, format="bgr", use_video_port=True)
-    _, frame = cam
+    _, frame = cap.read()
 
     # Convert BGR to HSV
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)

@@ -21,7 +21,7 @@ def getArgs():
     return vars(ap.parse_args())
 
 ################ INIT ########################
-def videoSource(args):
+def getVideoSource(args):
     if args["picamera"] is not None:
         return initPiCamera()
     if args["video"] is not None:
@@ -33,7 +33,7 @@ def initPiCamera():
     from picamera import PiCamera
     import time
     camera = PiCamera()
-    time.sleep(0.1)
+    camera.framerate = 32
     return camera
 
 def initVideoFile(path):
@@ -43,40 +43,54 @@ def initWebCam():
     return cv2.VideoCapture(0)
 
 ################ FRAME ########################
-def getFrame(args, videoSource):
-    if args["picamera"] is not None:
-        return framePiCamera(videoSource)
-    elif args["video"] is not None:
-        _,frame = frameVideoFile(videoSource)
+def getFrameNoPi(args, videoSource):
+    if args["video"] is not None:
+        _,frame = getFrameVideoFile(videoSource)
     else:
-        _,frame = frameWebCam(videoSource)
+        _,frame = getFrameWebCam(videoSource)
     return frame
 
-def framePiCamera(videoSource):
+def getFrameVideoFile(videoSource):
+    return videoSource.read()
+
+def getFrameWebCam(videoSource):
+    return videoSource.read()
+
+################ ISPI ########################
+def isPiCamera(args):
+    return args["video"] is not None
+
+################  PI  ########################
+def yesPiCamera(videoSource):
     from picamera.array import PiRGBArray
-    rawCapture = PiRGBArray(videoSource)
-    videoSource.capture(rawCapture, format="bgr")
-    image = rawCapture.array
-    return image
+    rawCapture = PiRGBArray(videoSource, size=(640, 480))
+    for frame in videoSource.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+        image = frame.array
+        action(frame)
+        # clear the stream in preparation for the next frame
+        rawCapture.truncate(0)
+        # Exit
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord("q"):
+            break
 
-def frameVideoFile(videoSource):
-    return videoSource.read()
+################ NOPI ########################
+def noPiCamera(arg,videoSource):
+    while(1):
+        # ReadFrame
+        frame = getFrameNoPi(args, videoSource)
+        action(frame)
 
-def frameWebCam(videoSource):
-    return videoSource.read()
-
+        # Exit
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord("q"):
+            break
 
 ################ MAIN ########################
 args = getArgs()
-vs = videoSource(args)
-while(1):
-    # ReadFrame
-    frame = getFrame(args, vs)
-    action(frame)
-
-    # Exit
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord("q"):
-        break
-
+vs = getVideoSource(args)
+if isPiCamera(args):
+    yesPiCamera(vs)
+else:
+    noPiCamera(args,vs)
 cv2.destroyAllWindows()

@@ -1,6 +1,6 @@
 import cv2   
 import numpy as np
-
+from AdjustmentFromVectorModule import adjusmentfromvector
 #Captura de video a traves de la webcam
 cap=cv2.VideoCapture(0)
 
@@ -45,21 +45,8 @@ while(1):
             D = np.linalg.norm(cx-cy) #Se aplica distancia euclidiana para encontrar la distancia entre los centros de masa.
             print("Distance: ") 
             print(D)
-        #if changeDistance != D:
-            #changeDistance = D
-            #print("Centro de masa: ")
-            #print("Coordenada m10 del centro x")
-            # print(M['m10'])
-            # print("Coordenada m00 del centro x")
-            # print(M['m00'])
-            # print("Coordenada m10 del centro y")
-            # print(M['m01'])
-            # print("Coordenada m00 del centro y")
-            # print(M['m00'])
-            # print("Centro en X")
-            # print(cx)
-            # print("Centro en Y")
-            # print(cy)
+        adj = adjusmentfromvector.AdjustmentFromVector()
+        adj.getAdjustmentFromCoor(2, 3, 4, 5)
 
 
     cv2.imshow("Color Tracking",img)

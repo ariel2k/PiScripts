@@ -16,12 +16,17 @@ while(1):
     blue_upper=np.array([150,255,255],np.uint8)
 
     blue=cv2.inRange(hsv,blue_lower,blue_upper) #Se crea una mascara utilizando intervalos de color azul.
-
-    kernal = np.ones((5 ,5), "uint8") #Crea una matriz de 5x5 la cual recorrera el video,
+    cv2.namedWindow("blue",cv2.WINDOW_NORMAL)
+    cv2.imshow("blue",blue)
+    kernal = np.ones((10 ,10), "uint8") #Crea una matriz de 5x5 la cual recorrera el video,
 
     blue=cv2.erode(blue,kernal, iterations=1) #Se erosiona utilizando el kernel sobre la mascara.
     res1=cv2.bitwise_and(img, img, mask = blue) #La nueva imagen reemplazara a blue.
-
+    cv2.namedWindow("blue2",cv2.WINDOW_NORMAL)
+    cv2.imshow("blue2",blue)
+    cv2.namedWindow("res1",cv2.WINDOW_NORMAL)
+    cv2.imshow("res1",res1)
+    print(cv2.THRESH_BINARY_INV )
 
     (_,contours,hierarchy)=cv2.findContours(blue,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #Encuentra los contornos de los objetos que se ven en el filtro
 
@@ -61,6 +66,7 @@ while(1):
             # print("Centro en Y")
             # print(cy)
 
+    cv2.namedWindow("Color Tracking",cv2.WINDOW_NORMAL)
 
     cv2.imshow("Color Tracking",img)
     if cv2.waitKey(10) & 0xFF == ord('q'):

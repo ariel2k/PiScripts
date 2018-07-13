@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-def cvtColor(frame):
+def toCvtColor(frame):
 	return cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
 
 def findColor(frame, color):

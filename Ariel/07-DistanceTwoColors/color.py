@@ -10,7 +10,7 @@ class Color:
 	def toBGR(self):
 		return np.array([self.b,self.g,self.r],np.uint8)
 
-class RangeColor:
+class ColorRange:
 	# constuctor
 	def __init__(self, name, colorMin, colorMax):
 		self.name = name
@@ -24,10 +24,10 @@ class RangeColor:
 		return self.colorMax.toBGR()
 
 def getColors():
-	cBlueMin = color.Color(100,150,80)
-	cBlueMax = color.Color(150,255,255)
-	cGreenMin = color.Color(40,100,100)
-	cGreenMax = color.Color(80,255,255)
-	colorBlue = color.ColorRange("Blue",cBlueMin, cBlueMax)
-	colorGreen = color.ColorRange("Green",cGreenMin, cGreenMax)
+	cBlueMin = Color(100,150,80)
+	cBlueMax = Color(150,255,255)
+	cGreenMin = Color(40,100,100)
+	cGreenMax = Color(80,255,255)
+	colorBlue = ColorRange("Blue",cBlueMin, cBlueMax)
+	colorGreen = ColorRange("Green",cGreenMin, cGreenMax)
 	return [colorBlue, colorGreen]
